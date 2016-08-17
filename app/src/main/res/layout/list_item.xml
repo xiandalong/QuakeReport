@@ -3,22 +3,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/mag_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        tools:text="8.9"/>
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        tools:text="8.9"
+        android:background="@drawable/magnitude_circle"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
 
     <TextView
-        android:id="@+id/location_view"
+        android:id="@+id/location_offset_view"
+        android:layout_marginLeft="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        tools:text="San Francisco, CA" />
+        tools:text="74km NW of" />
+
+    <TextView
+        android:id="@+id/primary_location_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        tools:text="Rumoi, Japan" />
 
     <TextView
         android:id="@+id/date"
