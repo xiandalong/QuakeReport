@@ -55,7 +55,7 @@ public final class QueryUtils {
                 JSONObject properties = features.optJSONObject(i).optJSONObject("properties");
                 double magnitude = properties.optDouble("mag");
                 String place = properties.optString("place");
-                String time = properties.optString("time");
+                long time = properties.optLong("time");
                 earthquakes.add(new Earthquake(magnitude,place,time));
             }
         } catch (JSONException e) {
