@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +37,7 @@ public class EarthQuakeAdapter extends ArrayAdapter<Earthquake> {
         // Get the {@link AndroidFlavor} object located at this position in the list
         Earthquake earthQuake = getItem(position);
 
-        TextView magnitudeView = (TextView)listItemView.findViewById(R.id.mag_view);
+        TextView magnitudeView = (TextView) listItemView.findViewById(R.id.magnitude);
         DecimalFormat formatter = new DecimalFormat("0.0");
         String magnitude = formatter.format(earthQuake.getMagnitude());
         magnitudeView.setText(magnitude);
@@ -56,12 +54,12 @@ public class EarthQuakeAdapter extends ArrayAdapter<Earthquake> {
 
 
         //set location offset
-        TextView locationOffsetView = (TextView)listItemView.findViewById(R.id.location_offset_view);
+        TextView locationOffsetView = (TextView) listItemView.findViewById(R.id.location_offset);
         String locationOffset = getLocationOffset(earthQuake.getCity());
         locationOffsetView.setText(locationOffset);
 
         //set primary location
-        TextView primaryLocationView = (TextView)listItemView.findViewById(R.id.primary_location_view);
+        TextView primaryLocationView = (TextView) listItemView.findViewById(R.id.primary_location);
         String primaryLocation = getPrimaryLocation(earthQuake.getCity());
         primaryLocationView.setText(primaryLocation);
 
