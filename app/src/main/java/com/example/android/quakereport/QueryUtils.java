@@ -56,7 +56,10 @@ public final class QueryUtils {
                 double magnitude = properties.optDouble("mag");
                 String place = properties.optString("place");
                 long time = properties.optLong("time");
-                earthquakes.add(new Earthquake(magnitude,place,time));
+                String url = properties.getString("url");
+                earthquakes.add(new Earthquake(magnitude,place,time,url));
+                // Extract the value for the key called "url"
+
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
