@@ -15,28 +15,35 @@
  */
 package com.example.android.quakereport;
 
-import android.app.DownloadManager;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.style.URLSpan;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Earthquake>> {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     public static final String QUERY_URL_STRING = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+    /**
+     * Constant value for the earthquake loader ID. We can choose any integer.
+     * This really only comes into play if you're using multiple loaders.
+     */
+    private static final int EARTHQUAKE_LOADER_ID = 1;
     private EarthQuakeAdapter mAdapter;
+    /**
+     * TextView that is displayed when the list is empty
+     */
+    private TextView mEmptyStateTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,30 +72,75 @@ public class EarthquakeActivity extends AppCompatActivity {
             }
         });
 
+        /** TextView that is displayed when the list is empty */
+        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(mEmptyStateTextView);
 
         // initialize and excute Async task
-        new EarthquakeAsyncTask().execute(QUERY_URL_STRING);
+//        new EarthquakeAsyncTask().execute(QUERY_URL_STRING);
+
+        //start a loader
+        // Get a reference to the LoaderManager, in order to interact with loaders.
+        LoaderManager loaderManager = getLoaderManager();
+
+        // Initialize the loader. Pass in the int ID constant defined above and pass in null for
+        // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
+        // because this activity implements the LoaderCallbacks interface).
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
     }
 
-    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>>{
+    @Override
+    public EarthquakeLoader onCreateLoader(int id, Bundle bundle) {
+        // Create a new loader for the given URL
+        return new EarthquakeLoader(this, QUERY_URL_STRING);
+    }
 
-        @Override
-        protected ArrayList<Earthquake> doInBackground(String... queryUrls) {
-            // Create a fake list of earthquake locations.
-            ArrayList<Earthquake> earthquakes = (ArrayList<Earthquake>) QueryUtils.extractEarthquakes(queryUrls[0]);
-            return  earthquakes;
-        }
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Earthquake>> loader, ArrayList<Earthquake> earthquakes) {
+        // set progress bar to be invisible
+        ProgressBar myProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        myProgressBar.setVisibility(View.GONE);
 
-        @Override
-        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
-            // Clear the adapter of previous earthquake data
-            mAdapter.clear();
+        // Set empty state text to display "No earthquakes found."
+        mEmptyStateTextView.setText(R.string.no_earthquakes);
 
-            // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
-            // data set. This will trigger the ListView to update.
-            if (earthquakes != null && !earthquakes.isEmpty()) {
-                mAdapter.addAll(earthquakes);
-            }
+        // Clear the adapter of previous earthquake data
+        mAdapter.clear();
+
+        // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+        // data set. This will trigger the ListView to update.
+        if (earthquakes != null && !earthquakes.isEmpty()) {
+            mAdapter.addAll(earthquakes);
         }
     }
+
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        mAdapter.clear();
+    }
+
+//    private class EarthquakeAsyncTask extends AsyncTask<String, Void, ArrayList<Earthquake>>{
+//
+//        @Override
+//        protected ArrayList<Earthquake> doInBackground(String... queryUrls) {
+//            // Create a fake list of earthquake locations.
+//            ArrayList<Earthquake> earthquakes = (ArrayList<Earthquake>) QueryUtils.extractEarthquakes(queryUrls[0]);
+//            return  earthquakes;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(ArrayList<Earthquake> earthquakes) {
+//            // Clear the adapter of previous earthquake data
+//            mAdapter.clear();
+//
+//            // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
+//            // data set. This will trigger the ListView to update.
+//            if (earthquakes != null && !earthquakes.isEmpty()) {
+//                mAdapter.addAll(earthquakes);
+//            }
+//        }
+//    }
+
+
 }
